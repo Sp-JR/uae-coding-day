@@ -444,6 +444,14 @@ nav{order:3;flex:0 0 100%;flex-wrap:nowrap;overflow-x:auto;gap:2px;scrollbar-wid
 nav::-webkit-scrollbar{display:none}
 nav button{flex:none;white-space:nowrap;padding:4px 11px;font-size:.85rem}
 }
+
+/* ===== PRINT FIX ===== */
+@media print{
+html,body{height:209mm!important}
+#app{height:209mm!important;overflow:hidden!important;opacity:1!important}
+#app>.certbox{height:209mm!important;opacity:1!important;visibility:visible!important;transform:none!important;filter:none!important}
+#app>.certbox *{opacity:1!important;visibility:visible!important}
+}
 </style>
 </head>
 <body>
@@ -831,6 +839,7 @@ function certV() {
 function printCert() {
   let s = document.getElementById("pg-land");
   if (!s) { s = document.createElement("style"); s.id = "pg-land"; s.textContent = "@page{size:A4 landscape;margin:0}"; document.head.appendChild(s); }
+  if (window.gsap) gsap.set(".certbox", {clearProps: "opacity,visibility,transform"});
   fit(); window.print();
 }
 function fit() {
@@ -1004,7 +1013,7 @@ function animStep(fresh, fx) {
     }
   }
   if (S.step === "win") gsap.from(".glass > div:first-child", {scale: 0, rotation: -25, duration: 1, ease: "elastic.out(1,.5)"});
-  if (S.step === "cert" && fresh) gsap.from(".certbox", {scale: .94, autoAlpha: 0, duration: .8, ease: "power3.out"});
+  /* certbox يظهر عبر حركة #app > * أعلاه؛ إزالة الحركة المتعارضة التي كانت تُبقي الشهادة باهتة */
 }
 if (window.gsap) {
   if (window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
